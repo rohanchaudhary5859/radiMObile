@@ -73,3 +73,22 @@ BEGIN
   );
 END;
 $$ LANGUAGE plpgsql;
+CREATE TABLE IF NOT EXISTS admin_users (
+  id UUID PRIMARY KEY,
+  email TEXT UNIQUE,
+  role TEXT DEFAULT 'admin',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS doctor_verification (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id),
+  certificate_url TEXT,
+  status TEXT DEFAULT 'pending',
+  reviewed_by UUID,
+  reviewed_at TIMESTAMPTZ
+);
+CREATE TABLE IF NOT EXISTS banned_users (
+  user_id UUID PRIMARY KEY REFERENCES profiles(id),
+  reason TEXT,
+  banned_at TIMESTAMPTZ DEFAULT now()
+);

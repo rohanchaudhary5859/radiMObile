@@ -55,3 +55,17 @@ FOR SELECT USING (auth.jwt()->>'role' = 'admin');
 
 CREATE POLICY doctor_verification_manage ON doctor_verification
 FOR SELECT USING (auth.jwt()->>'role' = 'admin');
+CREATE TABLE IF NOT EXISTS audio_rooms (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  host_id UUID REFERENCES profiles(id),
+  title TEXT,
+  is_live BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS audio_room_members (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  room_id UUID REFERENCES audio_rooms(id),
+  user_id UUID REFERENCES profiles(id),
+  joined_at TIMESTAMPTZ DEFAULT now()
+);

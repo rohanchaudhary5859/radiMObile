@@ -118,3 +118,35 @@ RETURNS TABLE(day date, impressions bigint, total_watch_seconds bigint) LANGUAGE
   GROUP BY 1
   ORDER BY 1;
 $$;
+-- create tables (if not already added)
+CREATE TABLE IF NOT EXISTS post_views (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  post_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+  user_id UUID,
+  viewed_at TIMESTAMPTZ DEFAULT now(),
+  watch_seconds INT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS reel_views (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  reel_id UUID REFERENCES reels(id) ON DELETE CASCADE,
+  user_id UUID,
+  viewed_at TIMESTAMPTZ DEFAULT now(),
+  watch_seconds INT DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS profile_visits (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  profile_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  visitor_id UUID,
+  visited_at TIMESTAMPTZ DEFAULT now()
+);
+-- aggregates
+CREATE TABLE IF NOT EXISTS analytics_daily_post (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  post_id UUID REFERENCES posts(id),
+  day DATE NOT NULL,
+  impressions BIGINT DEFAULT 0,
+  total_watch_seconds BIGINT DEFAULT 0,
+  UNIQUE(post_id, day)
+);

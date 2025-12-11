@@ -16,3 +16,20 @@ async function loop() {
 }
 
 loop();
+import { createClient } from "@supabase/supabase-js";
+const sb = createClient(process.env.SUPABASE_URL, process.env.SERVICE_ROLE_KEY);
+
+async function run() {
+  const expire = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { data } = await sb
+    .from("stories")
+    .select("*")
+    .lt("created_at", expire);
+
+  for (const s of data) {
+    await sb.from("stories").delete().eq("id", s.id);
+  }
+}
+
+run();
+
