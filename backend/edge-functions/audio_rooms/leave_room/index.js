@@ -1,0 +1,19 @@
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+export default async (req) => {
+  try {
+    const { room_id, user_id } = await req.json();
+
+    await supabase
+      .from("audio_room_members")
+      .update({ left_at: new Date() })
+      .eq("room_id", room_id)
+      .eq("user_id", user_id);
+
+    return new Response(JSON.stringify({ ok: true }), { status: 200 });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+  }
+};

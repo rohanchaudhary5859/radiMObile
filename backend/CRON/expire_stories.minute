@@ -1,0 +1,3 @@
+# run every 1 minute
+curl -X POST https://YOUR_PROJECT.functions.supabase.co/expire_story
+refresh_embeddings.hourly

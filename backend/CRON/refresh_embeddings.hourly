@@ -1,0 +1,2 @@
+# run every 1 hour
+curl -X POST https://YOUR-PROJECT.functions.supabase.co/rebuild_embeddings
